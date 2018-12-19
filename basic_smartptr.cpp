@@ -65,8 +65,8 @@ class SmartPointer{
 		}
 	}
 
-	SmartPointer(SmartPointer &rhs){
-		pt = &(*rhs);
+	SmartPointer(const SmartPointer &rhs){
+		pt = rhs.GetData();
 		r = rhs.GetReference();
 		r->IncrRefCount();
 		cout << "COPY CONSTRUCTOR";
@@ -81,11 +81,15 @@ class SmartPointer{
 		return pt;
 	}
 
-	Reference *GetReference(){
+	T *GetData() const{
+		return pt;
+	}
+
+	Reference *GetReference() const{
 		return r;
 	}
 
-	SmartPointer<T> &operator=(SmartPointer<T> &rhs){
+	SmartPointer<T> &operator=(const SmartPointer<T> &rhs){
 		
 		if(this == &rhs){
 			return *this;
@@ -97,7 +101,7 @@ class SmartPointer{
 			delete r;
 		}
 
-		pt = &(*rhs);
+		pt = rhs.GetData();
 		r = rhs.GetReference();
 		r->IncrRefCount();
 		
