@@ -42,7 +42,10 @@ class SmartPointer{
 	Reference *r; //reference count
 	public:
 
-	SmartPointer() : pt(NULL), r(NULL) {}
+	SmartPointer() : pt(NULL), r(NULL) {
+		r = new Reference();
+		r->IncrRefCount();
+	}
 
 	SmartPointer(T *_pt) : pt(_pt), r(NULL){
 		r = new Reference();
@@ -87,16 +90,20 @@ class SmartPointer{
 		if(this == &rhs){
 			return *this;
 		}
-		
+
+		//Get rid of the old data
+		if(r->DecrRefCount() == 0){
+			delete pt;
+			delete r;
+		}
+
 		pt = &(*rhs);
 		r = rhs.GetReference();
 		r->IncrRefCount();
 		
 		cout << "ASSIGNMENT OPERATOR";
 		r->DisplayRefCount();
-
-		
-
+		return *this;
 		
 	}	
 
@@ -136,8 +143,9 @@ int main(){
 	cout << "CALLING FOO" << endl;
 	foo(sp);
 
-	SmartPointer<Data> sp3;
-	sp3 = sp;
+	cout << "CREATING 2 SMART POINTERS" << endl;
+	SmartPointer<Data> sp3, sp4;
+	sp3 = sp4 = sp;
 
 	(*sp).Incr();
 	sp->Display();
